@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,6 +16,6 @@ public class Pessoa {
     private Long id;
     private String nome;
     private LocalDate dataNascimento;
-    @OneToMany(mappedBy = "pessoa")
-    private List<Endereco> enderecos;
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL , mappedBy = "pessoa")
+    private List<Endereco> enderecos = new ArrayList<>();
 }

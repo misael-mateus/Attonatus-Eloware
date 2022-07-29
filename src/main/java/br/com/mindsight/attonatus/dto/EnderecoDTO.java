@@ -7,10 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class EnderecoDTO {
         private String logradouro;
-        private String numero;
+        private int numero;
         private String cep;
         private String cidade;
-
+        private boolean isPrincipal;
 }

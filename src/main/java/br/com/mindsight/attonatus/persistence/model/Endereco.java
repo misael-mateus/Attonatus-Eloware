@@ -13,8 +13,9 @@ public class Endereco {
     private Long id;
     private String logradouro;
     private String CEP;
-    private String numero;
+    private int numero;
     private String cidade;
+    private boolean isPrincipal;
     @ManyToOne
     private Pessoa pessoa;
 }
