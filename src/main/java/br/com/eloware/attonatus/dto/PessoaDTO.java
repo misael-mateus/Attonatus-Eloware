@@ -1,4 +1,4 @@
-package br.com.mindsight.attonatus.dto;
+package br.com.eloware.attonatus.dto;
 
 import lombok.*;
 

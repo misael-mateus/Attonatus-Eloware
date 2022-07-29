@@ -1,4 +1,4 @@
-package br.com.mindsight.attonatus.exception;
+package br.com.eloware.attonatus.exception;
 
 public class PessoaJaExisteException extends IllegalArgumentException {
     public PessoaJaExisteException() {

@@ -1,8 +1,8 @@
-package br.com.mindsight.attonatus.service;
+package br.com.eloware.attonatus.service;
 
-import br.com.mindsight.attonatus.dto.EnderecoDTO;
-import br.com.mindsight.attonatus.dto.PessoaDTO;
-import br.com.mindsight.attonatus.persistence.model.Pessoa;
+import br.com.eloware.attonatus.dto.EnderecoDTO;
+import br.com.eloware.attonatus.dto.PessoaDTO;
+import br.com.eloware.attonatus.persistence.model.Pessoa;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

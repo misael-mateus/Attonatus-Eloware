@@ -1,4 +1,4 @@
-package br.com.mindsight.attonatus.config;
+package br.com.eloware.attonatus.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

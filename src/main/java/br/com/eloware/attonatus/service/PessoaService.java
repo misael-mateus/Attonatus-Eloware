@@ -1,12 +1,12 @@
-package br.com.mindsight.attonatus.service;
+package br.com.eloware.attonatus.service;
 
-import br.com.mindsight.attonatus.dto.EnderecoDTO;
-import br.com.mindsight.attonatus.dto.PessoaDTO;
-import br.com.mindsight.attonatus.exception.ClienteSemEnderecoException;
-import br.com.mindsight.attonatus.exception.PessoaJaExisteException;
-import br.com.mindsight.attonatus.persistence.model.Endereco;
-import br.com.mindsight.attonatus.persistence.model.Pessoa;
-import br.com.mindsight.attonatus.persistence.repository.PessoaRepository;
+import br.com.eloware.attonatus.dto.EnderecoDTO;
+import br.com.eloware.attonatus.dto.PessoaDTO;
+import br.com.eloware.attonatus.exception.ClienteSemEnderecoException;
+import br.com.eloware.attonatus.exception.PessoaJaExisteException;
+import br.com.eloware.attonatus.persistence.model.Endereco;
+import br.com.eloware.attonatus.persistence.model.Pessoa;
+import br.com.eloware.attonatus.persistence.repository.PessoaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,24 +33,26 @@ public class PessoaService implements PessoaImplementacaoService{
         return repository.save(modelMapper.map(pessoaDTO, Pessoa.class));
     }
 
-    public List<Pessoa> listarPessoas() {
-        return repository.findAll();
-    }
+
 
     public Optional<Pessoa> buscarPessoa(Long id) {
         return repository.findById(id);
+    }
+
+    @Override
+    public Optional<List<Pessoa>> listarPessoas() {
+        return Optional.of(repository.findAll());
     }
 
     public Optional<Pessoa> buscarPessoa(PessoaDTO pessoaDTO) {
         return repository.findByNomeAndDataNascimento(pessoaDTO.getNome(), pessoaDTO.getDataNascimento());
     }
 
-    public Pessoa atualizarPessoa(PessoaDTO pessoaDTO) {
-        Optional<Pessoa> pessoa = repository.findByNomeAndDataNascimento(pessoaDTO.getNome(), pessoaDTO.getDataNascimento());
-        if (pessoa.isPresent()) {
-            return repository.save(modelMapper.map(pessoaDTO, Pessoa.class));
-        }
-        return null;
+    public Pessoa atualizarPessoa(Long id, PessoaDTO pessoaDTO) {
+        Pessoa pessoa = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada"));
+        pessoa.setNome(pessoaDTO.getNome());
+        pessoa.setDataNascimento(pessoaDTO.getDataNascimento());
+        return repository.save(pessoa);
     }
 
     public void deletarPessoa(Long id) {
@@ -84,18 +86,6 @@ public class PessoaService implements PessoaImplementacaoService{
 
     public Pessoa cadastrarEndereco(Long id, EnderecoDTO enderecoDTO) {
         Optional<Pessoa> pessoa = repository.findById(id);
-        if (pessoa.isPresent()) {
-            Pessoa pessoaAtualizada = pessoa.get();
-            Endereco endereco = modelMapper.map(enderecoDTO, Endereco.class);
-            endereco.setPessoa(pessoaAtualizada);
-            pessoaAtualizada.getEnderecos().add(endereco);
-            return repository.save(pessoaAtualizada);
-        }
-        return null;
-    }
-
-    public Pessoa cadastrarEndereco(PessoaDTO pessoaDTO, EnderecoDTO enderecoDTO) {
-        Optional<Pessoa> pessoa = repository.findByNomeAndDataNascimento(pessoaDTO.getNome(), pessoaDTO.getDataNascimento());
         if (pessoa.isPresent()) {
             Pessoa pessoaAtualizada = pessoa.get();
             Endereco endereco = modelMapper.map(enderecoDTO, Endereco.class);
