@@ -1,4 +1,4 @@
-package br.com.mindsight.attonatus.dto;
+package br.com.eloware.attonatus.dto;
 
 import lombok.*;
 
@@ -7,10 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class EnderecoDTO {
         private String logradouro;
-        private String numero;
+        private int numero;
         private String cep;
         private String cidade;
-
+        private boolean isPrincipal;
 }

@@ -1,6 +1,8 @@
-package br.com.mindsight.attonatus.persistence.model;
+package br.com.eloware.attonatus.persistence.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -13,8 +15,10 @@ public class Endereco {
     private Long id;
     private String logradouro;
     private String CEP;
-    private String numero;
+    private int numero;
     private String cidade;
+    private boolean isPrincipal;
     @ManyToOne
+    @JsonIgnore
     private Pessoa pessoa;
 }

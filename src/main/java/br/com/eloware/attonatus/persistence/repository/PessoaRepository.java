@@ -1,9 +1,7 @@
-package br.com.mindsight.attonatus.persistence.repository;
+package br.com.eloware.attonatus.persistence.repository;
 
-import br.com.mindsight.attonatus.persistence.model.Pessoa;
+import br.com.eloware.attonatus.persistence.model.Pessoa;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
-
 
 }
