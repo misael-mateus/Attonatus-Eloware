@@ -1,5 +1,6 @@
 package br.com.eloware.attonatus.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +19,6 @@ public class Endereco {
     private String cidade;
     private boolean isPrincipal;
     @ManyToOne
+    @JsonIgnore
     private Pessoa pessoa;
 }

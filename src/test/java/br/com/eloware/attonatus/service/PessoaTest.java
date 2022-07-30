@@ -2,16 +2,16 @@ package br.com.eloware.attonatus.service;
 
 import br.com.eloware.attonatus.dto.EnderecoDTO;
 import br.com.eloware.attonatus.dto.PessoaDTO;
+import br.com.eloware.attonatus.exception.EssaPessoaJaTemUmEnderecoPrincipalException;
 import br.com.eloware.attonatus.persistence.model.Pessoa;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 
 @SpringBootTest
 public class PessoaTest {
@@ -19,37 +19,79 @@ public class PessoaTest {
     @Autowired
     private PessoaService service;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+    static PessoaDTO pessoaDTO;
+
+    @BeforeAll
+    public static void criarPessoaDTO() {
+        pessoaDTO = new PessoaDTO();
+        pessoaDTO.setNome("João");
+        pessoaDTO.setDataNascimento(LocalDate.of(1990, 1, 1));
+    }
+
     @Test
     public void deveCriarPessoa() {
-        PessoaDTO pessoaDTO = new PessoaDTO();
-        pessoaDTO.setNome("João");
-        pessoaDTO.setDataNascimento(LocalDate.now());
         Pessoa pessoa = service.criarPessoa(pessoaDTO);
-        assertNotNull(pessoa);
+        Assertions.assertEquals(pessoa.getNome(), pessoaDTO.getNome());
+        Assertions.assertEquals(pessoa.getDataNascimento(), pessoaDTO.getDataNascimento());
     }
 
     @Test
-    public void deveCriarPessoaComDoisEndereco() {
-        Pessoa pessoa = service.criarPessoa(new PessoaDTO("João", LocalDate.of(1990, 1, 1)));
-        service.cadastrarEndereco(pessoa.getId(),
-                new EnderecoDTO("Rua1", 2, "5000323", "Coxim", true));
-        Pessoa pessoaAtualizada = service.cadastrarEndereco(pessoa.getId(),
-                new EnderecoDTO("Rua2", 2, "5000323", "Coxim", false));
-
-        Assertions.assertEquals(2, pessoaAtualizada.getEnderecos().size());
+    public void deveEditarPessoa() {
+        Pessoa pessoa = service.criarPessoa(pessoaDTO);
+        pessoaDTO.setNome("Maria");
+        pessoaDTO.setDataNascimento(LocalDate.of(1990, 1, 1));
+        Pessoa pessoaEditada = service.editarPessoa(pessoa.getId(), pessoaDTO);
+        Assertions.assertEquals(pessoaEditada.getNome(), pessoaDTO.getNome());
+        Assertions.assertEquals(pessoaEditada.getDataNascimento(), pessoaDTO.getDataNascimento());
     }
 
     @Test
-    public void deveRetornarOEnderecoPrincipal() {
-        Pessoa pessoa = service.criarPessoa(new PessoaDTO("João", LocalDate.of(1990, 1, 1)));
-        service.cadastrarEndereco(pessoa.getId(),
-                new EnderecoDTO("Rua1", 1, "5000323", "Coxim", false));
-        service.cadastrarEndereco(pessoa.getId(),
-                new EnderecoDTO("Rua2", 2, "5000323", "Coxim", false));
-        Pessoa pessoaAtualizada = service.cadastrarEndereco(pessoa.getId(),
-                new EnderecoDTO("Rua3", 3, "5000323", "Coxim", true));
-        Assertions.assertEquals("Rua3", service.buscarEnderecoPrincipal(pessoaAtualizada.getId()).getLogradouro());
+    public void deveConsultarPessoa() {
+        Pessoa pessoa = service.criarPessoa(pessoaDTO);
+        service.consultarPessoa(pessoa.getId());
+        Assertions.assertEquals(pessoa.getNome(), pessoaDTO.getNome());
     }
+
+    @Test
+    public void deveListarPessoas() {
+        Pessoa p1 = service.criarPessoa(pessoaDTO);
+        Pessoa p2 = service.criarPessoa(pessoaDTO.builder().nome("Maria").build());
+        Pessoa p3 = service.criarPessoa(pessoaDTO.builder().nome("karkan").build());
+        Assertions.assertEquals(3, service.listarPessoas().get().size());
+    }
+
+    @Test
+    public void deveInformarEnderecoPrincipal() {
+        Pessoa pessoa = service.criarPessoa(pessoaDTO);
+        service.criarEndereco(pessoa.getId(), EnderecoDTO.builder()
+                .logradouro("Rua 1").numero(1).cidade("Coxim").isPrincipal(true).cep("4241123").build());
+        service.criarEndereco(pessoa.getId(), EnderecoDTO.builder()
+                .logradouro("Rua 4").numero(3).cidade("Corumba").isPrincipal(false).cep("2443324").build());
+        Assertions.assertEquals("Rua 1", service.informarEnderecoPrincipal(pessoa.getId()).getLogradouro());
+    }
+
+    @Test
+    public void deveVincularEnderecoAPessoa() {
+        Pessoa pessoa = service.criarPessoa(pessoaDTO);
+        service.criarEndereco(pessoa.getId(), EnderecoDTO.builder()
+                .logradouro("Rua 1").numero(1).cidade("Coxim").isPrincipal(true).cep("4241123").build());
+        Assertions.assertEquals("Rua 1", service.consultarPessoa(pessoa.getId()).get().getEnderecos().get(0).getLogradouro());
+    }
+
+    @Test
+    public void naoDevePermitirCriarDoisEnderecosPrincipais() {
+        Pessoa pessoa = service.criarPessoa(pessoaDTO);
+        service.criarEndereco(pessoa.getId(), EnderecoDTO.builder()
+                .logradouro("Rua 1").numero(1).cidade("Coxim").isPrincipal(true).cep("4241123").build());
+        Assertions.assertThrows(EssaPessoaJaTemUmEnderecoPrincipalException.class, () -> {
+            service.criarEndereco(pessoa.getId(), EnderecoDTO.builder()
+                    .logradouro("Rua 3").numero(3).cidade("Coxim").isPrincipal(true).cep("4241123").build());
+        });
+    }
+
 
 
 }
