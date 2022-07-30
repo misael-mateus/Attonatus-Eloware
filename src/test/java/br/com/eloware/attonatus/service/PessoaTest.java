@@ -55,13 +55,6 @@ public class PessoaTest {
         Assertions.assertEquals(pessoa.getNome(), pessoaDTO.getNome());
     }
 
-    @Test
-    public void deveListarPessoas() {
-        Pessoa p1 = service.criarPessoa(pessoaDTO);
-        Pessoa p2 = service.criarPessoa(pessoaDTO.builder().nome("Maria").build());
-        Pessoa p3 = service.criarPessoa(pessoaDTO.builder().nome("karkan").build());
-        Assertions.assertEquals(3, service.listarPessoas().get().size());
-    }
 
     @Test
     public void deveInformarEnderecoPrincipal() {

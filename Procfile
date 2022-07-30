@@ -1,0 +1,1 @@
+web: java -jar build/libs/Attonatus-0.0.1-SNAPSHOT
