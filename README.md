@@ -14,8 +14,8 @@
 
 * REST API para Cadastro de Pessoas e Endereços
 
-![img_1.png](img_1.png)
-![img.png](img.png)
+![img_1.png](src/main/java/br/com/eloware/attonatus/assents/img_1.png)
+![img.png](src/main/java/br/com/eloware/attonatus/assents/img.png)
 
 ## Projeto:
 
